@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College ChatBot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {margin: 0;padding: 0;font-family:Arial;background:#e6f0ff;display:flex;justify-content:center;align-items:center;height:100vh;}
+        .app-container {width:100%;max-width:500px;height:95vh;background:white;border-radius:15px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 20px rgba(0,0,0,0.2);}
+        .header {background:#202123;color:white;padding:15px;text-align:center;font-size:18px;font-weight:bold;}
+        .chat-area {flex:1;padding:15px;overflow-y:auto;background:#f7f7f8;}
+        .message {display:flex;margin-bottom:15px;}
+        .user-message {flex-direction:row-reverse;}
+        .avatar {width:32px;height:32px;border-radius:50%;color:white;font-weight:bold;display:flex;justify-content:center;align-items:center;margin:0 8px;}
+        .user-avatar {background:#19c37d;}
+        .ai-avatar {background:#0d8c6c;}
+        .text-bubble {max-width:75%;padding:12px;border-radius:15px;line-height:1.4;font-size:14px;}
+        .user-bubble {background:#19c37d;color:white;border-bottom-right-radius:5px;}
+        .ai-bubble {background:white;border:1px solid #ddd;border-bottom-left-radius:5px;}
+        .input-container {padding:12px;background:white;border-top:1px solid #ddd;display:flex;gap:10px;}
+        #messageInput {flex:1;padding:12px;border:2px solid #ddd;border-radius:12px;font-size:15px;}
+        #sendButton {width:45px;height:45px;border:none;border-radius:50%;background:#19c37d;color:white;font-size:18px;}
+        .typing-indicator {padding:10px;display:flex;align-items:center;gap:5px;}
+        .typing-dot {width:7px;height:7px;border-radius:50%;background:#aaa;animation:blink 1.4s infinite;}
+        @keyframes blink {0%,100%{opacity:.2}50%{opacity:1}}
+    </style>
+</head>
+
+<body>
+<div class="app-container">
+    <div class="header">🤖 College ChatBot</div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div class="input-container">
+        <input id="messageInput" type="text" placeholder="Ask something..." autocomplete="off">
+        <button id="sendButton">➤</button>
+    </div>
+</div>
+
+<script>
+
+const chatArea=document.getElementById('chatArea');
+const input=document.getElementById('messageInput');
+const btn=document.getElementById('sendButton');
+
+// Display messages
+function addMessage(role,text){
+    const div=document.createElement('div');
+    div.className="message "+(role==="user"?"user-message":"");
+
+    const avatar=document.createElement('div');
+    avatar.className="avatar "+(role==="user"?"user-avatar":"ai-avatar");
+    avatar.textContent=role==="user"?"U":"AI";
+
+    const bubble=document.createElement('div');
+    bubble.className="text-bubble "+(role==="user"?"user-bubble":"ai-bubble");
+    bubble.textContent=text;
+
+    div.appendChild(avatar);div.appendChild(bubble);chatArea.appendChild(div);
+    chatArea.scrollTop=chatArea.scrollHeight;
+}
+
+// Typing animation
+function showTyping(){
+    const div=document.createElement('div');
+    div.id="typing";div.className="message";
+    div.innerHTML=`<div class="avatar ai-avatar">AI</div>
+    <div class="text-bubble ai-bubble typing-indicator">
+        <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div>`;
+    chatArea.appendChild(div);chatArea.scrollTop=chatArea.scrollHeight;
+}
+function removeTyping(){const t=document.getElementById("typing");if(t)t.remove();}
+
+// 💬 AI response logic with your dataset
+async function getReply(msg){
+    msg=msg.toLowerCase();
+    await new Promise(r=>setTimeout(r,600));
+
+    // ----- First college dataset -----
+    if(msg.includes("admission"))return "Admissions are open from June to July. Merit & counseling based.";
+    if(msg.includes("courses"))return "We offer CSE, ECE, EEE, Mechanical, IT, AI and Robotics.";
+    if(msg.includes("timing"))return "College timing is 9 AM to 4 PM (1st data) / 9 AM to 5 PM (2nd data).";
+    if(msg.includes("hostel"))return "Hostel available for boys & girls with Wi-Fi and mess.";
+    if(msg.includes("contact"))return "Email: info@tpgit.edu.in | Phone: 0416-2267762";
+    if(msg.includes("fees"))return "Fees vary by course. Contact office for details.";
+    if(msg.includes("exam"))return "Semester exams follow the Anna University schedule.";
+    if(msg.includes("result"))return "Results available on the Anna University website.";
+    if(msg.includes("library"))return "Library time: 9 AM to 5 PM | Borrow limit: 5 books.";
+    if(msg.includes("bus"))return "Bus facility not available.";
+    if(msg.includes("sports"))return "Sports: Cricket, Football, Basketball, Indoor games.";
+    if(msg.includes("club"))return "Clubs: Coding, Robotics, Arts, Music.";
+    if(msg.includes("scholarship"))return "Community & Pragati scholarships available. Contact office.";
+    if(msg.includes("principal"))return "Principal: Letitia.";
+    if(msg.includes("event"))return "Cultural & Technical events in December.";
+    if(msg.includes("placement"))return "Good placement history. Top companies visit.";
+    if(msg.includes("address")||msg.includes("location"))
+        return "Thanthai Periyar Government Institute of Technology, Vellore - 632002.";
+
+    // Greetings
+    if(msg.includes("hi")||msg.includes("hello"))return "Hello 😊 Ask anything about college!";
+    if(msg.includes("bye"))return "Goodbye! Have a great day! 👋";
+
+    return "I didn't understand. Try asking about: admission, courses, fees, hostel, placement.";
+}
+
+// Send message
+async function sendMsg(){
+    let text=input.value.trim();if(!text)return;
+    addMessage("user",text);input.value="";
+    showTyping();
+    let reply=await getReply(text);
+    removeTyping();
+    addMessage("ai",reply);
+}
+
+btn.onclick=sendMsg;
+input.addEventListener("keypress",e=>{if(e.key==="Enter")sendMsg();});
+
+window.onload=()=>setTimeout(()=>addMessage("ai","Hello! Ask me any college related question."),500);
+
+</script>
+</body>
+</html>
