@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>College ChatBot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>TPGIT ChatBot</title>
     <style>
         body {margin: 0;padding: 0;font-family:Arial;background:#e6f0ff;display:flex;justify-content:center;align-items:center;height:100vh;}
         .app-container {width:100%;max-width:500px;height:95vh;background:white;border-radius:15px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 20px rgba(0,0,0,0.2);}
@@ -25,8 +23,8 @@
         @keyframes blink {0%,100%{opacity:.2}50%{opacity:1}}
     </style>
 </head>
-
 <body>
+
 <div class="app-container">
     <div class="header">🤖 College ChatBot</div>
 
@@ -37,10 +35,8 @@
         <button id="sendButton">➤</button>
     </div>
 </div>
-
 <script>
-
-const chatArea=document.getElementById('chatArea');
+  const chatArea=document.getElementById('chatArea');
 const input=document.getElementById('messageInput');
 const btn=document.getElementById('sendButton');
 
@@ -73,53 +69,113 @@ function showTyping(){
 }
 function removeTyping(){const t=document.getElementById("typing");if(t)t.remove();}
 
-// 💬 AI response logic with your dataset
-async function getReply(msg){
-    msg=msg.toLowerCase();
-    await new Promise(r=>setTimeout(r,600));
+let data = {
 
-    // ----- First college dataset -----
-    if(msg.includes("admission"))return "Admissions are open from June to July. Merit & counseling based.";
-    if(msg.includes("courses"))return "We offer CSE, ECE, EEE, Mechanical, IT, AI and Robotics.";
-    if(msg.includes("timing"))return "College timing is 9 AM to 4 PM (1st data) / 9 AM to 5 PM (2nd data).";
-    if(msg.includes("hostel"))return "Hostel available for boys & girls with Wi-Fi and mess.";
-    if(msg.includes("contact"))return "Email: info@tpgit.edu.in | Phone: 0416-2267762";
-    if(msg.includes("fees"))return "Fees vary by course. Contact office for details.";
-    if(msg.includes("exam"))return "Semester exams follow the Anna University schedule.";
-    if(msg.includes("result"))return "Results available on the Anna University website.";
-    if(msg.includes("library"))return "Library time: 9 AM to 5 PM | Borrow limit: 5 books.";
-    if(msg.includes("bus"))return "Bus facility not available.";
-    if(msg.includes("sports"))return "Sports: Cricket, Football, Basketball, Indoor games.";
-    if(msg.includes("club"))return "Clubs: Coding, Robotics, Arts, Music.";
-    if(msg.includes("scholarship"))return "Community & Pragati scholarships available. Contact office.";
-    if(msg.includes("principal"))return "Principal: Letitia.";
-    if(msg.includes("event"))return "Cultural & Technical events in December.";
-    if(msg.includes("placement"))return "Good placement history. Top companies visit.";
-    if(msg.includes("address")||msg.includes("location"))
-        return "Thanthai Periyar Government Institute of Technology, Vellore - 632002.";
+    "Hi":"Hello ,Ask me anything about College.",
+    "Thankyou":"Thankyou have a nice day.",
 
-    // Greetings
-    if(msg.includes("hi")||msg.includes("hello"))return "Hello 😊 Ask anything about college!";
-    if(msg.includes("bye"))return "Goodbye! Have a great day! 👋";
+    /* College Information */
+    "tpgit":"Thanthai Periyar Government Institute of Technology is a government engineering college.",
+    "established","When it is established":"TPGIT was established in the year 1990.",
+    "location","Where it is Located":"TPGIT is located at Bagayam, Vellore.",
+    "address","What is the address of the college":"TPGIT, Bagayam, Vellore – 632002.",
+    "affiliation","Which university it is affiliated to":"TPGIT is affiliated to Anna University, Chennai.",
+    "governance","Which directorate controls TPGIT":"TPGIT is under Directorate of Technical Education, Tamil Nadu.",
 
-    return "I didn't understand. Try asking about: admission, courses, fees, hostel, placement.";
-}
+    /* Working Time */
+    "working","What is the working hours of the college":"College working hours are 9 AM to 5 PM, Monday to Friday.",
 
-// Send message
-async function sendMsg(){
-    let text=input.value.trim();if(!text)return;
-    addMessage("user",text);input.value="";
+    /* Admission */
+    "admission","Is admission direct or counselling":"Admissions are done through Anna University counselling.",
+    "eligibility""":"Candidates must pass 12th with Maths, Physics and Chemistry.",
+    "application""":"Application is through online counselling only.",
+    "reservation""":"7.5 percent reservation students do not have to pay college fees.",
+
+    /* Courses */
+    "ug""":"UG courses include B.E. CSE, ECE, EEE, Mechanical, Civil and Robotics.",
+    "pg""":"PG courses include M.E. Applied Electronics, Manufacturing and Structural.",
+    "mca""":"MCA course is available.",
+    "parttime""":"Part-time engineering courses are available.",
+    "robotics""":"Robotics engineering course is available at UG level.",
+
+    /* Fees */
+    "fees","":"College fees vary based on category. First graduate: Rs.6500, Non-first graduate: Rs.4500.",
+    "first graduate""":"First graduate college fee is Rs.6500.",
+    "non first graduate""":"Non-first graduate college fee is Rs.4500.",
+    "mess""":"Mess fees are approximately Rs.1500 per month.",
+    "seven point five""":"Students under 7.5 percent reservation do not pay college fees.",
+
+    /* Academic */
+    "calendar""":"Semester system is followed as per Anna University academic calendar.",
+    "examination""":"Examinations are conducted as per Anna University schedule.",
+    "results""":"Results are published on the Anna University website.",
+
+    /* Facilities */
+    "library":"Library is open from 9 AM to 5 PM on working days.",
+    "laboratory":"Well equipped laboratories are available for all departments.",
+    "wifi":"Campus has WiFi facility for students.",
+    "facilities":"Campus facilities include library, hostel, labs and sports ground.",
+
+    /* Hostel */
+    "hostel":"Hostel facility is available for both boys and girls.",
+    "hostelfee":"Total hostel fee for new admission is Rs.14,800.",
+    "onetimefee":"One time hostel fee is Rs.5,250.",
+    "yearlyfee":"Yearly hostel fee is Rs.9,550.",
+
+    /* Placement */
+    "placement":"TPGIT has good placement support.",
+    "highestpackage":"Highest package offered is around Rs.8 LPA.",
+    "averagepackage":"Average package is around Rs.4 to 5 LPA.",
+    "company":"Companies include TVS, Yamaha and QSpiders.",
+
+    /* Student Life */
+    "sports":"Sports facilities are available for indoor and outdoor games.",
+    "events":"Cultural and technical events are conducted every year.",
+    "faculty":"College has experienced and qualified faculty members.",
+    "campus":"College has a green and peaceful campus environment.",
+    "safety":"Campus is secured with security staff and CCTV surveillance.",
+    "antiragging":"Anti-ragging committee is available to ensure student safety.",
+
+    /* Support */
+    "scholarship":"Government scholarships are available for eligible students.",
+    "canteen":"Hygienic canteen facility is available inside the campus.",
+    "medical":"Basic medical and first aid facilities are available.",
+
+    /* Contact */
+    "helpdesk":"Help desk assistance is available during working hours.",
+    "contact":"College contact number is 0416-2267762"
+};
+
+btn.addEventListener("click", sendMessage);
+input.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+
+function sendMessage() {
+    const userText = input.value.toLowerCase().trim();
+    if (!userText) return;
+
+    addMessage("user", userText);
+    input.value = "";
+
     showTyping();
-    let reply=await getReply(text);
-    removeTyping();
-    addMessage("ai",reply);
+
+    let reply = "Sorry, no information found. Try asking about courses, fees, hostel, admission or placement.";
+
+    for (let key in data) {
+        if (userText.includes(key)) {
+            reply = data[key];
+            break;
+        }
+    }
+
+    setTimeout(() => {
+        removeTyping();
+        addMessage("ai", reply);
+    }, 600);
 }
-
-btn.onclick=sendMsg;
-input.addEventListener("keypress",e=>{if(e.key==="Enter")sendMsg();});
-
-window.onload=()=>setTimeout(()=>addMessage("ai","Hello! Ask me any college related question."),500);
 
 </script>
+
 </body>
 </html>
